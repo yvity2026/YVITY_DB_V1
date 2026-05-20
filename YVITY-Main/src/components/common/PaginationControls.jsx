@@ -2,6 +2,7 @@
 
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { PAGINATION_DOTS } from "@/lib/pagination";
+import { motion } from "framer-motion";
 
 function PaginationButton({
   children,
@@ -11,18 +12,20 @@ function PaginationButton({
   className = "",
 }) {
   return (
-    <button
+    <motion.button
+      whileHover={!disabled ? { scale: 1.05 } : {}}
+      whileTap={!disabled ? { scale: 0.95 } : {}}
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`cursor-pointer rounded-lg border px-3 py-2 text-sm font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+      className={`cursor-pointer rounded-lg border px-3 py-2 text-sm font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-50 font-poppins ${
         active
-          ? "border-[#0A4A4A] bg-[#0A4A4A] text-white"
-          : "border-gray-200 bg-white text-gray-700 hover:border-[#0A4A4A] hover:text-[#0A4A4A]"
+          ? "border-[#0A4A4A] bg-[#0A4A4A] text-white shadow-md"
+          : "border-[#F8F6F1] bg-white text-[#0A4A4A] hover:border-[#0A4A4A] hover:bg-[#F8F6F1]"
       } ${className}`}
     >
       {children}
-    </button>
+    </motion.button>
   );
 }
 
@@ -47,12 +50,18 @@ export default function PaginationControls({
   } = pagination;
 
   return (
-    <div className="mt-6 flex flex-col gap-3 border-t border-gray-100 pt-4 sm:flex-row sm:items-center sm:justify-between">
-      <p className="text-sm text-gray-500">
-        Showing {startItem}-{endItem} of {totalItems} {label}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ delay: 0.3 }}
+      className="mt-6 flex flex-col gap-3 border-t border-[#F8F6F1] pt-4 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p className="text-sm text-gray-600 font-poppins font-medium">
+        Showing <span className="text-[#0A4A4A] font-semibold">{startItem}-{endItem}</span> of <span className="text-[#0A4A4A] font-semibold">{totalItems}</span> {label}
       </p>
 
       <div className="flex flex-col gap-2">
+        {/* Mobile view */}
         <div className="flex items-center justify-between gap-2 sm:hidden">
           <PaginationButton
             disabled={!hasPreviousPage}
@@ -65,7 +74,7 @@ export default function PaginationControls({
             </span>
           </PaginationButton>
 
-          <div className="min-w-[88px] text-center text-sm font-semibold text-gray-600">
+          <div className="min-w-[88px] text-center text-sm font-semibold text-[#0A4A4A] font-cormorant">
             {currentPage} / {totalPages}
           </div>
 
@@ -81,6 +90,7 @@ export default function PaginationControls({
           </PaginationButton>
         </div>
 
+        {/* Mobile page numbers */}
         <div className="flex flex-wrap items-center justify-center gap-2 sm:hidden">
           {pageNumbers.map((pageNumber, index) =>
             pageNumber === PAGINATION_DOTS ? (
@@ -103,6 +113,7 @@ export default function PaginationControls({
           )}
         </div>
 
+        {/* Desktop view */}
         <div className="hidden items-center gap-2 sm:flex">
           <PaginationButton
             disabled={!hasPreviousPage}
@@ -147,6 +158,6 @@ export default function PaginationControls({
           </PaginationButton>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
